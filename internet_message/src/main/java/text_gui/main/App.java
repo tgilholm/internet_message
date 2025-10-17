@@ -25,6 +25,8 @@ public class App extends Application
 		
 	}
 
+	
+	// Starts the page for a user to type in their username
 	private void startLoginGUI()
 	{
 		// Instantiates the View, Model and Controller of the login page
@@ -40,9 +42,11 @@ public class App extends Application
 		l_view.start(new Stage());
 	}
 
-	private void startServer()
-	{
-
-	}
+	
+	// Starts the messaging server
+//	private void startServer()
+//	{
+//
+//	}
 
 }

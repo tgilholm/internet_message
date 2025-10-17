@@ -19,6 +19,7 @@ import text_gui.utilities.*;
  * 		at the moment just a username will do
  * 2.	Take the user to the next page where they can send messages
  * 3.	Move constants to a record & tidy up CSS
+ * 4.	More user options- colours, profile picture etc
  */
 
 public class LoginView 
