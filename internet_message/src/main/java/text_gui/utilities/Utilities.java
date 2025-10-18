@@ -2,6 +2,12 @@ package text_gui.utilities;
 
 public class Utilities
 {
+	// Server vars
+
+	public static final int port = 1234; //placeholder
+	
+	
+	// JavaFX vars
 	public static final int loginScreenHeight = 400;
 	public static final int loginScreenWidth = 600;
 	
