@@ -11,6 +11,7 @@ public class LoginController
 	public void loginPressed(String username) throws IOException
 	{
 		// If not empty, accept the username and pass it to the login method
+		// Could potentially add a password system?
 		if (!(username.equals("")))
 		{
 			Model.login(username);

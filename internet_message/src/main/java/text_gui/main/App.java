@@ -30,7 +30,6 @@ public class App extends Application
 	private void startLoginGUI()
 	{
 		// Instantiates the View, Model and Controller of the login page
-		
 		LoginView l_view = new LoginView();
 		LoginController l_controller = new LoginController();
 		LoginModel l_model = new LoginModel();
