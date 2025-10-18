@@ -1,5 +1,7 @@
 package text_gui.client;
 
+import java.io.IOException;
+
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -101,7 +103,17 @@ public class ClientView
 		
 		sendButton = new Button("Send");
 		sendButton.setStyle(Utilities.normalStyle);
-		sendButton.setOnAction(this::buttonClicked);
+		sendButton.setOnAction(event -> {
+			try
+			{
+				sendMessage(event);
+			} catch (IOException e)
+			{
+				System.out.println("Unable to send message");
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
 		HBox sendBar = new HBox(10, textInput, sendButton);
 	
 		// Add the layout elements to the VBox
@@ -113,9 +125,10 @@ public class ClientView
 	}
 	
 	// Handle what happens when the "send" button is pressed
-	private void buttonClicked(ActionEvent event)
+	private void sendMessage(ActionEvent event) throws IOException
 	{
-		
+		String message = textInput.getText();
+		Controller.sendMessage(message);
 	}
 
 }
