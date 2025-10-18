@@ -1,5 +1,6 @@
 package text_gui.client;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -24,8 +25,9 @@ public class ClientView
 	private HBox hbRoot;
 	private VBox activeUsers;
 	private VBox textScreen;
-	private TextField textInput;
 	private TextArea activeUserList;
+	private TextArea messageHistory;
+	private TextField textInput;
 	private Button sendButton;
 
 	public void start(Stage window)
@@ -83,11 +85,37 @@ public class ClientView
 		return vbActiveUsersWindow;
 	}
 
+	// Right side of the screen- message history, text input & "send" button
 	private VBox createTextScreen()
 	{
-		VBox vbTextScreen = new VBox();
+		// TextArea displaying the messages of all the users
+		messageHistory = new TextArea();
+		messageHistory.setEditable(false);
+		messageHistory.setPrefSize(columnWidth / 2, Utilities.clientScreenHeight - 100);
+		
+		// Display the user input and send button next to each other
+		textInput = new TextField();
+		textInput.setPromptText("Send a message!");
+		textInput.setStyle(Utilities.normalStyle);
+		textInput.setPrefWidth(columnWidth - 125);
+		
+		sendButton = new Button("Send");
+		sendButton.setStyle(Utilities.normalStyle);
+		sendButton.setOnAction(this::buttonClicked);
+		HBox sendBar = new HBox(10, textInput, sendButton);
+	
+		// Add the layout elements to the VBox
+		VBox vbTextScreen = new VBox(15, messageHistory, sendBar);
 		vbTextScreen.setPrefWidth(Utilities.clientScreenWidth / 2);
+		vbTextScreen.setAlignment(Pos.TOP_CENTER);
+		vbTextScreen.setStyle("-fx-padding:15px");
 		return vbTextScreen;
+	}
+	
+	// Handle what happens when the "send" button is pressed
+	private void buttonClicked(ActionEvent event)
+	{
+		
 	}
 
 }
