@@ -46,7 +46,5 @@ public class ClientModel
 		// When a message is received, update the user's display so they can see it
 	}
 	
-	// get message from client method
-	
 }
 

@@ -2,6 +2,9 @@ package text_gui.server;
 
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 
 import text_gui.utilities.Utilities;
 
@@ -10,6 +13,12 @@ import text_gui.utilities.Utilities;
 // The server will open a new thread for each client that connects
 public class Server
 {
+	// public MessageDB mdb;
+
+	// Uses a CopyOnWriteArrayList- there are more read than write ops,
+	// So this is ideal- it makes a new copy of the array for each change
+	private static CopyOnWriteArrayList<ClientThread> clientList = new CopyOnWriteArrayList<>();
+
 	public void startServer()
 	{
 		try
@@ -24,40 +33,60 @@ public class Server
 
 	public static void main(String[] args) throws IOException
 	{
-		int port = Utilities.port;
-		Socket clientSocket = null;
-		ServerSocket serverSocket = null;
-
-		DataInputStream istream = null;
-		DataOutputStream ostream = null;
-
-		System.out.println("Messaging server started");
 		try
 		{
+			int port = Utilities.port;
+			Socket clientSocket = null;
+
+			// Open the server socket to receive new clients
+			ServerSocket serverSocket;
 			serverSocket = new ServerSocket(port);
+			System.out.println("Messaging server started");
+
+			// Thread to handle admin messages
+			new Thread(() -> {
+				// Type messages into the console to broadcast a message to all clients
+				Scanner scanner = new Scanner(System.in); // Starts a new scanner that reads from the user input
+
+				while (true) // Infinite loop to constantly handle input
+				{
+					String svMessage = scanner.nextLine();
+					broadcastMessage("[admin]: " + svMessage, null);
+				}
+			}).start();
+
+			while (true)
+			{
+				// Listens for new clients, handles each one in a separate thread
+				clientSocket = serverSocket.accept();
+				System.out.println(String.format("Connected to client: %s", clientSocket)); // Displays ID of connected
+																							// client
+
+				// Adds the client to the working list
+				ClientThread s = new ClientThread(clientSocket);
+				clientList.add(s);
+				new Thread(s).start(); // Starts a new client thread to handle the client
+			}
 		} catch (IOException e)
 		{
+			System.out.println("Error starting server");
 			e.printStackTrace();
-			System.out.println("Error in opening a server socket");
 		}
+	}
 
-		while (true)
+	public static void broadcastMessage(String message, ClientThread sender)
+	{
+		// For each client in the list, send them the message
+		for (ClientThread t : clientList)
 		{
-			// Listens for new clients, handles each one in a separate thread
-			try
+			if (t != sender) // If the client is not the one who sent the message, send it to them
 			{
-				clientSocket = serverSocket.accept();
-				System.out.println("Connected to client");
-				ServerThread s = new ServerThread(clientSocket);
-				s.start();
-			} catch (IOException e)
-			{
-				e.printStackTrace();
-				System.out.println("Error in connecting to client");
+				t.sendMessage(message);
 			}
 		}
 	}
-}
+	
+
 
 // Each server thread needs to read the messages from the client it is connected to
 // Send the message history back to the user
@@ -66,79 +95,91 @@ public class Server
 // Then, when another thread processes a message from the user, it first has to send the
 // message history to the user
 
-// Just an echo server for now though!
+// Each server thread is able to access the global message history
+// When a user sends a message to it, it provisionally sends it back to the user to display it on their screen
+// It then attempts to save the message to the global history, which is a synchronised method.
+// As multiple threads may be trying to save to the history simultaneously, this needs to be handled.
+// The message history can be pulled from the database every couple of seconds
+// If there is a change in the database, then refresh it. Otherwise, simply wait
 
-class ServerThread extends Thread
-{
-	Socket s = null;
-	String in;
-
-	// Uses a BufferedReader for reading from stream and a PrintWriter to write to
-	// it
-	DataInputStream istream = null;
-	DataOutputStream ostream = null;
-
-	// Constructor for new ServerThread object, sets port number
-	public ServerThread(Socket _s)
+	private static class ClientThread implements Runnable
 	{
-		s = _s;
-	}
+		private Socket s = null;
+		private PrintWriter ostream; // For writing messages
+		private BufferedReader istream; // For reading messages
+		private String username;
 
-	// Starts a new thread
-	public void run()
-	{
-		System.out.println("Server thread launched " + this.getId());
-		// Open read/writers
-		try
+		// Constructor for new ClientThread object, sets port number
+		public ClientThread(Socket _s)
 		{
-			istream = new DataInputStream(s.getInputStream());
-			ostream = new DataOutputStream(s.getOutputStream());
-
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-			System.out.println("Error creating read/writer");
-		}
-
-		// Read data from the client
-		try
-		{
-			in = istream.readUTF(); // Initial Read
-			System.out.println(in);
-
-			// use an interrobang as the "quit" character for now, Unicode U+203D
-			String escape = new String(Character.toChars(0x203D));
-			while (!(in == escape))
-			{
-				ostream.writeUTF(in); // sends the line back to the client, waits for another message
-				ostream.flush();
-				System.out.println("Server Response: " + in);
-				in = istream.readUTF();
-			}
-
-		} catch (IOException e)
-		{
-
-			e.printStackTrace();
-			System.out.println("I/O Error in thread");
-		}
-
-		finally // always executed after try even if catch
-		{
-			// Close connection to client
+			s = _s;
 			try
 			{
-				System.out.println("Closing connection to client");
-				istream.close();
-				ostream.close();
-				s.close();
+				ostream = new PrintWriter(s.getOutputStream(), true); // auto flush true
+				istream = new BufferedReader(new InputStreamReader(s.getInputStream()));
+
 			} catch (IOException e)
 			{
 				e.printStackTrace();
-				System.out.println("Error closing socket");
+				System.out.println("IO error in new ClientThread");
 			}
 		}
-		// When user quits
 
+		// Method for sending messages to a client
+		public void sendMessage(String message)
+		{
+			ostream.println(message);
+		}
+		
+		// Starts a new thread
+
+		// Need to get username from client here
+		@Override 
+		public void run()
+		{
+			System.out.println("Server thread launched " + this);
+			
+			// Receive the username from the client
+			try
+			{
+				username = istream.readLine(); // Waits for the client's username
+				
+				// Sends a message in the chat telling users that a new user has joined
+				String svMessage = String.format(("User %s has joined the chat"), username);
+				broadcastMessage("[admin]: " + svMessage, null);
+				
+				// Once the user has joined, handle their input
+				String input;
+				while ((input = istream.readLine()) != null) // until user disconnects, read line
+				{
+					// Sends the message back to all users in the format @user: message
+					broadcastMessage(String.format("@%s: %s", username, input), this);
+				}
+				
+				// After the user disconnects, remove them from the list
+				clientList.remove(this);
+				broadcastMessage(String.format("User %s disconnected", username), null);
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+				System.out.println("Server error");
+			}
+
+			finally // always executed after try even if catch
+			{
+				// Close connection to client
+				try
+				{
+					System.out.println("Closing connection to client");
+					istream.close();
+					ostream.close();
+					s.close();
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+					System.out.println("Error closing socket");
+				}
+			}
+		}
 	}
 }

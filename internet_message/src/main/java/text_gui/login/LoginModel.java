@@ -26,7 +26,7 @@ public class LoginModel
 		c_controller.Model = c_model;
 		
 		// Links together the client and the model
-		Client cl = new Client();
+		Client cl = new Client(username);
 		cl.Model = c_model;
 		c_model.cl = cl;
 		

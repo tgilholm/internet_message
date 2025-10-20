@@ -3,7 +3,7 @@ package text_gui.main;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import text_gui.login.*;
-import text_gui.server.Server;
+import text_gui.server.*;
 
 import java.io.IOException;
 
@@ -57,6 +57,17 @@ public class App extends Application
 	private void startServer()
 	{
 		Server s = new Server();
+		
+//		// Open the database
+//		try
+//		{
+//			//MessageDB newDB = new MessageDB();
+//			//s.mdb = newDB; // Connects the database to the server
+//		} catch (IOException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		s.startServer();
 	}
 
