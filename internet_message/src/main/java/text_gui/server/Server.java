@@ -10,6 +10,18 @@ import text_gui.utilities.Utilities;
 // The server will open a new thread for each client that connects
 public class Server
 {
+	public void startServer()
+	{
+		try
+		{
+			main(null);
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args) throws IOException
 	{
 		int port = Utilities.port;

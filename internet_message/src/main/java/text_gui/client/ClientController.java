@@ -15,4 +15,10 @@ public class ClientController
 		}
 	}
 	
+	// tells the model to connect to the server
+	public void connectToServer()
+	{
+		Model.connectToServer();
+	}
+	
 }

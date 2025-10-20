@@ -3,6 +3,7 @@ package text_gui.main;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import text_gui.login.*;
+import text_gui.server.Server;
 
 import java.io.IOException;
 
@@ -39,13 +40,17 @@ public class App extends Application
 		l_model.View = l_view;
 		
 		l_view.start(new Stage());
+		
+		// Additionally, starts the messaging server in the background
+		startServer();
 	}
 
 	
 	// Starts the messaging server
-//	private void startServer()
-//	{
-//
-//	}
+	private void startServer()
+	{
+		Server s = new Server();
+		s.startServer();
+	}
 
 }

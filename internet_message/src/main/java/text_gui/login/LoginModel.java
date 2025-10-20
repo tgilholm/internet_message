@@ -1,5 +1,6 @@
 package text_gui.login;
 
+
 import javafx.stage.Stage;
 import text_gui.client.*;
 
@@ -17,16 +18,17 @@ public class LoginModel
 		
 		// Start up a client window by linking together the view, model and controller
 		ClientView c_view = new ClientView();
-		Client client = new Client(); // For server interface
 		ClientController c_controller = new ClientController();
 		ClientModel c_model = new ClientModel(); // Model for the Controller class
 		
 		c_view.Controller = c_controller;
 		c_model.View = c_view;
 		c_controller.Model = c_model;
-		client.Model = c_model; // Attaches the model to the controller & client
 		
-		
+		// Links together the client and the model
+		Client cl = new Client();
+		cl.Model = c_model;
+		c_model.cl = cl;
 		
 		c_view.start(new Stage());
 	}
