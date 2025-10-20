@@ -1,5 +1,7 @@
 package text_gui.client;
 
+import java.util.ArrayList;
+
 import text_gui.utilities.Utilities;
 
 // Interfaces with the Client class to send messages to the server
@@ -14,6 +16,9 @@ public class ClientModel
 	public Client cl;
 	public String text;
 	
+	// ArrayList to hold the messages
+	public ArrayList<String> messageList;
+	
 	// Invoked when the client is started- attempts to connect to the server
 	public void connectToServer()
 	{
@@ -21,14 +26,17 @@ public class ClientModel
 	}
 	
 	// Sends the message from the user to the server
-	public void sendMessage(String message)
+	public void sendMessage(String message, String username)
 	{
-		cl.sendMessage(message);
+		// Sends the message in the format "@username: message
+		cl.sendMessage(String.format("@%s: %s", username, message));
 	}
 	
 	// Handles incoming messages from the server
 	public void receiveMessage(String message)
 	{
+		messageList.add(message);
+		View.update(messageList);
 		// When a message is received, update the user's display so they can see it
 	}
 	

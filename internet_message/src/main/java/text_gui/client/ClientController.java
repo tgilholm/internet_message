@@ -7,11 +7,11 @@ public class ClientController
 	// Handles user input on the ClientView
 	
 	// When the user presses "send", pass the message to the model
-	public void sendMessage(String message)
+	public void sendMessage(String message, String username)
 	{
 		if (!(message.equals("")))
 		{
-			Model.sendMessage(message);
+			Model.sendMessage(message, username);
 		}
 	}
 	

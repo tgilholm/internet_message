@@ -1,6 +1,7 @@
 package text_gui.client;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
@@ -31,6 +32,13 @@ public class ClientView
 	private TextArea messageHistory;
 	private TextField textInput;
 	private Button sendButton;
+	private String username;
+	
+	public ClientView(String _username)
+	{
+		username = _username;
+	}
+	
 
 	public void start(Stage window)
 	{
@@ -128,7 +136,18 @@ public class ClientView
 	private void sendMessage(ActionEvent event) throws IOException
 	{
 		String message = textInput.getText();
-		Controller.sendMessage(message);
+		Controller.sendMessage(message, username);
+	}
+	
+	// Refreshes the message history
+	public void update(ArrayList<String> _messageHistory)
+	{
+		// Empties the message history, replaces it with the new one
+		messageHistory.clear();
+		for (String i : _messageHistory)
+		{
+			messageHistory.appendText(i);
+		}
 	}
 
 }

@@ -17,7 +17,7 @@ public class LoginModel
 		System.out.println(username);
 		
 		// Start up a client window by linking together the view, model and controller
-		ClientView c_view = new ClientView();
+		ClientView c_view = new ClientView(username); // Passes the username to the view
 		ClientController c_controller = new ClientController();
 		ClientModel c_model = new ClientModel(); // Model for the Controller class
 		
