@@ -17,13 +17,15 @@ public class ClientModel
 	public Client cl;
 	public String text;
 	
-	// ArrayList to hold the messages
+	// ArrayLists to hold the messages and active users
 	public ArrayList<String> messageList;
+	public ArrayList<String> activeUsers;
 	
 	// When the model is constructed, instantiate the messageList
 	public ClientModel()
 	{
 		messageList = new ArrayList<String>();
+		activeUsers = new ArrayList<String>();
 	}
 	
 	// Invoked when the client is started- attempts to connect to the server
@@ -57,7 +59,17 @@ public class ClientModel
 		Platform.runLater(() -> {
 			View.update(messageList);
 		});
+		
+		// if message starts with [JOIN] or [LEFT], update the user list
+		
+		if (message.contains("[JOIN]"))
+		{
+			
+		}
+		
 	}
+
+	
 		// When a message is received, update the user's display so they can see it
 }
 

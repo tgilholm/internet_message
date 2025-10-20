@@ -140,7 +140,7 @@ public class Server
 				
 				// Sends a message in the chat telling users that a new user has joined
 				String svMessage = String.format(("User %s has joined the chat"), username);
-				broadcastMessage("[admin]: " + svMessage, null);
+				broadcastMessage("[JOIN]: " + svMessage, null);
 				
 				// Once the user has joined, handle their input
 				String input;
@@ -153,7 +153,8 @@ public class Server
 				
 				// After the user disconnects, remove them from the list
 				clientList.remove(this);
-				broadcastMessage(String.format("User %s disconnected", username), null);
+				svMessage = String.format("User %s has left the chat", username);
+				broadcastMessage("[LEFT]: " + svMessage, null);
 			} catch (IOException e)
 			{
 				e.printStackTrace();
