@@ -23,7 +23,6 @@ public class App extends Application
 		// To start with, starts the server and opens an instance of the login GUI
 		//startServer();
 		startLoginGUI();
-		
 	}
 
 	
@@ -41,8 +40,16 @@ public class App extends Application
 		
 		l_view.start(new Stage());
 		
-		// Additionally, starts the messaging server in the background
-		startServer();
+		// Additionally, starts the messaging server in a new thread // otherwise the program will hang?
+		
+		Thread sThread = new Thread()
+				{
+					public void run() {
+						startServer();
+					}
+				};
+				
+		sThread.start();
 	}
 
 	

@@ -42,6 +42,10 @@ public class ClientView
 
 	public void start(Stage window)
 	{
+		// First, connect the client to the server
+		Controller.connectToServer();
+		
+		
 		// Instantiate both halves of the screen
 		activeUsers = createActiveUsersWindow();
 		textScreen = createTextScreen();

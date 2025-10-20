@@ -12,7 +12,6 @@ public class Client
 	public Socket clSocket;
 
 	// Allows I/O between the server and client
-	BufferedReader stdIn;
 	DataOutputStream ostream;
 	DataInputStream istream;
 
@@ -24,7 +23,7 @@ public class Client
 		{
 			clSocket = new Socket(h, p);
 			ostream = new DataOutputStream(clSocket.getOutputStream());
-			stdIn = new BufferedReader(new InputStreamReader(System.in));
+			istream = new DataInputStream(clSocket.getInputStream());
 
 			// Starts the reader thread
 			ReaderThread rt = new ReaderThread();
@@ -44,6 +43,7 @@ public class Client
 		{
 			try
 			{
+				System.out.println("Sending message to server: " + input);
 				ostream.writeUTF(input);
 				ostream.flush();
 
@@ -65,20 +65,21 @@ public class Client
 			// Holds text received from the server
 			String serverOutput = "";
 
-			System.out.print("reader thread started");
+			System.out.println("reader thread started");
 
 			try
 			{
-				while (clSocket.isConnected() && !((serverOutput = stdIn.readLine()) == null))
+				while (clSocket.isConnected() && !((serverOutput = istream.readUTF()) == null))
 				{
 					// When a new message is read in, call the readMessage method in the model
-					Model.receiveMessage(serverOutput);
 					System.out.println(serverOutput);
+					Model.receiveMessage(serverOutput);
 				}
 			} catch (IOException e)
 			{
 				e.printStackTrace();
 			}
+			System.out.println("reader thread stopped");
 
 		}
 	}

@@ -21,7 +21,7 @@ public class Server
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args) throws IOException
 	{
 		int port = Utilities.port;
@@ -73,9 +73,10 @@ class ServerThread extends Thread
 	Socket s = null;
 	String in;
 
-	// Uses a BufferedReader for reading from stream and a PrintWriter to write to it
-	BufferedReader istream = null;
-	PrintWriter ostream = null;
+	// Uses a BufferedReader for reading from stream and a PrintWriter to write to
+	// it
+	DataInputStream istream = null;
+	DataOutputStream ostream = null;
 
 	// Constructor for new ServerThread object, sets port number
 	public ServerThread(Socket _s)
@@ -86,11 +87,12 @@ class ServerThread extends Thread
 	// Starts a new thread
 	public void run()
 	{
+		System.out.println("Server thread launched " + this.getId());
 		// Open read/writers
 		try
 		{
-			istream = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			ostream = new PrintWriter(s.getOutputStream());
+			istream = new DataInputStream(s.getInputStream());
+			ostream = new DataOutputStream(s.getOutputStream());
 
 		} catch (IOException e)
 		{
@@ -101,16 +103,17 @@ class ServerThread extends Thread
 		// Read data from the client
 		try
 		{
-			in = istream.readLine(); // Initial Read
+			in = istream.readUTF(); // Initial Read
+			System.out.println(in);
 
 			// use an interrobang as the "quit" character for now, Unicode U+203D
 			String escape = new String(Character.toChars(0x203D));
 			while (!(in == escape))
 			{
-				ostream.println(in); // sends the line back to the client, waits for another message
+				ostream.writeUTF(in); // sends the line back to the client, waits for another message
 				ostream.flush();
 				System.out.println("Server Response: " + in);
-				in = istream.readLine();
+				in = istream.readUTF();
 			}
 
 		} catch (IOException e)

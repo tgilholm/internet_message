@@ -19,6 +19,12 @@ public class ClientModel
 	// ArrayList to hold the messages
 	public ArrayList<String> messageList;
 	
+	// When the model is constructed, instantiate the messageList
+	public ClientModel()
+	{
+		messageList = new ArrayList<String>();
+	}
+	
 	// Invoked when the client is started- attempts to connect to the server
 	public void connectToServer()
 	{
@@ -35,7 +41,7 @@ public class ClientModel
 	// Handles incoming messages from the server
 	public void receiveMessage(String message)
 	{
-		messageList.add(message);
+		messageList.add(message + "\n");
 		View.update(messageList);
 		// When a message is received, update the user's display so they can see it
 	}
