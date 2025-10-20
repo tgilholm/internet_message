@@ -2,6 +2,7 @@ package text_gui.client;
 
 import java.util.ArrayList;
 
+import javafx.application.Platform;
 import text_gui.utilities.Utilities;
 
 // Interfaces with the Client class to send messages to the server
@@ -29,23 +30,34 @@ public class ClientModel
 	public void connectToServer()
 	{
 		cl.connectToServer("localhost", Utilities.port);
-		View.update(messageList);
+		
+		Platform.runLater(() -> {
+			View.update(messageList);
+		});
 	}
 	
 	// Sends the message from the user to the server
 	public void sendMessage(String message, String username)
 	{
-		// Sends the message in the format "@username: message
+		// Sends message to server, clears the text box
 		cl.sendMessage(message);
+		
+		// JavaFX only runs on one thread, all updates must be done on the JavaFX Application Thread
+		//Platform.runLater creates a new runnable that will be run (at some point) in the javaFX thread
+		// This prevents data synchronisation issues
+		Platform.runLater(() -> {
+			View.clearTextBox();
+		});
 	}
 	
 	// Handles incoming messages from the server
 	public void receiveMessage(String message)
 	{
 		messageList.add(message + "\n");
-		View.update(messageList);
-		// When a message is received, update the user's display so they can see it
+		Platform.runLater(() -> {
+			View.update(messageList);
+		});
 	}
-	
+		// When a message is received, update the user's display so they can see it
 }
 

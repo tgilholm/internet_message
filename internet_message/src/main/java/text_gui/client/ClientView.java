@@ -141,10 +141,12 @@ public class ClientView
 	private void sendMessage(ActionEvent event) throws IOException
 	{
 		String message = textInput.getText();
-		Controller.sendMessage(message, username);
+		if (message != "") {
+			Controller.sendMessage(message, username);
+		}
 	}
 	
-	// Refreshes the message history
+	// Refreshes the message history- multiple threads access this, requiring synchronisation
 	public void update(ArrayList<String> _messageHistory)
 	{
 		// Empties the message history, replaces it with the new one
@@ -153,6 +155,11 @@ public class ClientView
 		{
 			messageHistory.appendText(i);
 		}
+	}
+	
+	public void clearTextBox()
+	{
+		textInput.clear();
 	}
 
 }

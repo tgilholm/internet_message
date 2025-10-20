@@ -3,14 +3,9 @@ package text_gui.client;
 import java.io.*;
 import java.net.*;
 
-import text_gui.utilities.Utilities;
-
 // Client class, directly interfaces with the server
 public class Client
 {
-	private static final String host = "localhost";
-	private static final int port = Utilities.port;
-
 	String username = "";
 	public ClientModel Model;
 	public Socket clSocket;

@@ -38,10 +38,12 @@ public class MessageDB
 			{
 				out.add(s.nextLine());
 			}
+			s.close();
 
 		} catch (IOException e)
 		{
 			System.out.println("Error occurred reading from file");
+			
 		}
 
 		return out;

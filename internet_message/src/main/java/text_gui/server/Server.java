@@ -19,6 +19,11 @@ public class Server
 	// So this is ideal- it makes a new copy of the array for each change
 	private static CopyOnWriteArrayList<ClientThread> clientList = new CopyOnWriteArrayList<>();
 
+	public void runServer() throws IOException
+	{
+		Server.main(null);
+	}
+	
 	public static void main(String[] args) throws IOException
 	{
 		try
@@ -41,6 +46,7 @@ public class Server
 					String svMessage = scanner.nextLine();
 					broadcastMessage("[admin]: " + svMessage, null);
 				}
+				
 			}).start();
 
 			while (true)
