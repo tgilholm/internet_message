@@ -29,13 +29,14 @@ public class ClientModel
 	public void connectToServer()
 	{
 		cl.connectToServer("localhost", Utilities.port);
+		View.update(messageList);
 	}
 	
 	// Sends the message from the user to the server
 	public void sendMessage(String message, String username)
 	{
 		// Sends the message in the format "@username: message
-		cl.sendMessage(String.format("@%s: %s", username, message));
+		cl.sendMessage(message);
 	}
 	
 	// Handles incoming messages from the server

@@ -39,36 +39,5 @@ public class App extends Application
 		l_model.View = l_view;
 		
 		l_view.start(new Stage());
-		
-		// Additionally, starts the messaging server in a new thread // otherwise the program will hang?
-		
-		Thread sThread = new Thread()
-				{
-					public void run() {
-						startServer();
-					}
-				};
-				
-		sThread.start();
 	}
-
-	
-	// Starts the messaging server
-	private void startServer()
-	{
-		Server s = new Server();
-		
-//		// Open the database
-//		try
-//		{
-//			//MessageDB newDB = new MessageDB();
-//			//s.mdb = newDB; // Connects the database to the server
-//		} catch (IOException e)
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		s.startServer();
-	}
-
 }

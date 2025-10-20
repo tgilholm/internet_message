@@ -19,18 +19,6 @@ public class Server
 	// So this is ideal- it makes a new copy of the array for each change
 	private static CopyOnWriteArrayList<ClientThread> clientList = new CopyOnWriteArrayList<>();
 
-	public void startServer()
-	{
-		try
-		{
-			main(null);
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	public static void main(String[] args) throws IOException
 	{
 		try
@@ -79,10 +67,10 @@ public class Server
 		// For each client in the list, send them the message
 		for (ClientThread t : clientList)
 		{
-			if (t != sender) // If the client is not the one who sent the message, send it to them
-			{
+			//if (t != sender) // If the client is not the one who sent the message, send it to them
+			//{
 				t.sendMessage(message);
-			}
+			//}
 		}
 	}
 	
@@ -153,6 +141,7 @@ public class Server
 				while ((input = istream.readLine()) != null) // until user disconnects, read line
 				{
 					// Sends the message back to all users in the format @user: message
+					System.out.println("Sending message to all users: " + String.format("@%s: %s", username, input));
 					broadcastMessage(String.format("@%s: %s", username, input), this);
 				}
 				

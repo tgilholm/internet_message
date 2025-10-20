@@ -29,7 +29,7 @@ public class LoginModel
 		Client cl = new Client(username);
 		cl.Model = c_model;
 		c_model.cl = cl;
-		
 		c_view.start(new Stage());
+		
 	}
 }

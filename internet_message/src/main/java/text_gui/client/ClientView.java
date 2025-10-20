@@ -37,6 +37,7 @@ public class ClientView
 	public ClientView(String _username)
 	{
 		username = _username;
+		messageHistory = new TextArea();
 	}
 	
 
